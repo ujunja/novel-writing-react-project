@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import ChatWindow from "./components/ChatWindow";
 import ContentPanel from "./components/ContentPanel";
@@ -13,14 +13,31 @@ interface Episode {
 
 const App: React.FC = () => {
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
-  const [episodes, setEpisodes] = useState<Episode[]>([
-    { id: 1, title: "외전 1편", content: "아침 햇살이 창문을 통해 스며들었다." },
-    { id: 2, title: "외전 2편", content: "주인공의 과거 이야기가 펼쳐진다." },
-  ]);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
 
+  useEffect(() => {
+    // .docx 파일 목록 API 호출
+    fetch("http://localhost:5000/api/files")
+      .then((response) => response.json())
+      .then((data) => setEpisodes(data))
+      .catch((error) => console.error("Error fetching files:", error));
+  }, []);
+
+  const handleSelectEpisode = (episode: Episode) => {
+    // API 호출로 파일 내용 가져오기
+    fetch(`http://localhost:5000/api/files/${episode.title}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const updatedEpisode = { ...episode, content: data.content };
+        console.log(updatedEpisode);
+        setSelectedEpisode(updatedEpisode);
+      })
+      .catch((error) => console.error("Error fetching file content:", error));
+  };
+  
   const handleUpdateContent = (id: number, updatedContent: string) => {
     setEpisodes((prevEpisodes) =>
-      prevEpisodes.map((ep) =>
+      prevEpisodes.map((ep) => 
         ep.id === id ? { ...ep, content: updatedContent } : ep
       )
     );
@@ -30,7 +47,7 @@ const App: React.FC = () => {
     <div className="app">
       <Sidebar
         episodes={episodes}
-        onSelectEpisode={(episode) => setSelectedEpisode(episode)}
+        onSelectEpisode={handleSelectEpisode}
       />
       <div className="main-content">
         <ChatWindow selectedEpisode={selectedEpisode} />

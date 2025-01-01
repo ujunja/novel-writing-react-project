@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./components/Sidebar";
 import ChatWindow from "./components/ChatWindow";
 import ContentPanel from "./components/ContentPanel";
+import Header from "./components/Header";
 import "./App.css";
 
 // 에피소드 데이터 타입 정의
@@ -12,6 +13,13 @@ interface Episode {
 }
 
 const App: React.FC = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+    document.body.classList.toggle("dark-mode", !isDarkMode);
+  };
+
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
 
@@ -45,16 +53,21 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-      <Sidebar
-        episodes={episodes}
-        onSelectEpisode={handleSelectEpisode}
-      />
-      <div className="main-content">
-        <ChatWindow selectedEpisode={selectedEpisode} />
-        <ContentPanel
-          selectedEpisode={selectedEpisode}
-          onUpdateContent={handleUpdateContent}
+      <div className="main-header">
+        <Header isDarkMode={isDarkMode} onToggleDarkMode={toggleDarkMode} />
+      </div>
+      <div className="main-body">
+        <Sidebar
+          episodes={episodes}
+          onSelectEpisode={handleSelectEpisode}
         />
+        <div className="main-content">
+          <ChatWindow selectedEpisode={selectedEpisode} />
+          <ContentPanel
+            selectedEpisode={selectedEpisode}
+            onUpdateContent={handleUpdateContent}
+          />
+        </div>
       </div>
     </div>
   );

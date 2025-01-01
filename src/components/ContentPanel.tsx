@@ -1,16 +1,8 @@
-import React, { useEffect, useState } from "react";
-// import "./ContentPanel.css";
+import React, { useState, useEffect } from "react";
+import { TextField, Button } from "@mui/material";
 
-// 에피소드 데이터 타입 정의
-interface Episode {
-  id: number;
-  title: string;
-  content: string;
-}
-
-// ContentPanel 컴포넌트 Prop 타입 정의
 interface ContentPanelProps {
-  selectedEpisode: Episode | null;
+  selectedEpisode: { title: string; content: string } | null;
   onUpdateContent: (id: number, updatedContent: string) => void;
 }
 
@@ -18,19 +10,32 @@ const ContentPanel: React.FC<ContentPanelProps> = ({
   selectedEpisode,
   onUpdateContent,
 }) => {
-  const [content, setContent] = useState<string>("");
+  const [content, setContent] = useState("");
 
+  // selectedEpisode가 변경될 때 content 상태를 업데이트
   useEffect(() => {
     if (selectedEpisode) {
       setContent(selectedEpisode.content);
     }
   }, [selectedEpisode]);
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const updatedContent = e.target.value;
-    setContent(updatedContent);
+  const handleContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setContent(event.target.value);
+  };
+
+  const handleSaveContent = () => {
     if (selectedEpisode) {
-      onUpdateContent(selectedEpisode.id, updatedContent);
+      // 서버 API 호출 로직 추가
+      fetch(`http://localhost:5000/api/files/${selectedEpisode.title}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Saved successfully:", data);
+        })
+        .catch((error) => console.error("Error saving content:", error));
     }
   };
 
@@ -38,11 +43,29 @@ const ContentPanel: React.FC<ContentPanelProps> = ({
     <div className="content-panel">
       <h2>에피소드 내용</h2>
       {selectedEpisode ? (
-        <textarea
-          value={content}
-          onChange={handleContentChange}
-          placeholder="에피소드 내용을 입력하세요."
-        />
+        <>
+          <TextField
+            multiline
+            fullWidth
+            variant="outlined"
+            value={content}
+            onChange={handleContentChange}
+            placeholder="에피소드 내용을 입력하세요."
+            rows={15}
+            sx={{
+              backgroundColor: "var(--panel-bg-color)",
+              color: "var(--text-color)",
+            }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSaveContent}
+            sx={{ marginTop: "10px" }}
+          >
+            저장
+          </Button>
+        </>
       ) : (
         <p>에피소드를 선택해주세요.</p>
       )}

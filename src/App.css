@@ -1,6 +1,45 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --sidebar-bg-color: #f0f0f0;
+  --panel-bg-color: #ffffff;
+}
+
+.dark-mode {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --sidebar-bg-color: #1f1f1f;
+  --panel-bg-color: #1e1e1e;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.main-header {
+  height: 8vh;
+  border-bottom: 1px solid #ccc;
+}
+
+.main-body {
+  display: flex;
+  flex-direction: row;
+  height: 90vh;
+}
+
+.sidebar {
+  background-color: var(--sidebar-bg-color);
+}
+
+.content-panel {
+  background-color: var(--panel-bg-color);
+}
+
 /* 전체 애플리케이션 스타일 */
 .app {
   display: flex;
+  flex-direction: column;
   height: 100vh;
 }
 
@@ -38,7 +77,8 @@
 .main-content {
   display: flex;
   flex: 1;
-  flex-direction: column;
+  overflow: hidden;
+  flex-direction: row; /* row | row-reverse | column | column-reverse; */
   box-sizing: border-box;
 }
 
@@ -75,6 +115,13 @@
 
 .chat-window button:hover {
   background-color: #0056b3;
+}
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-y: auto;
 }
 
 /* 콘텐츠 패널 스타일 */

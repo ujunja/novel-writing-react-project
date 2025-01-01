@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES5",                        // ES5 호환 코드 출력
+    "lib": ["DOM", "DOM.Iterable", "ESNext"], // DOM 및 최신 JS 기능 사용
+    "baseUrl": "src",                       // baseUrl 설정
+    "paths": {
+      "*": ["*"]                            // 간단한 import 경로 사용
+    },
+    "esModuleInterop": true,                // CommonJS와 ES 모듈 호환
+    "skipLibCheck": true,                   // 라이브러리 타입 검사 생략
+    "jsx": "react-jsx",                     // React JSX 사용
+    "allowSyntheticDefaultImports": true,  // default import 허용
+    "moduleResolution": "node",            // Node.js 스타일 모듈 해석
+    "strict": true,                         // 엄격한 타입 검사
+    "forceConsistentCasingInFileNames": true // 대소문자 파일 이름 일관성
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build"]       // 빌드 및 외부 모듈 제외
+}
